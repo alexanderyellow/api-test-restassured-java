@@ -29,7 +29,7 @@ public class DemoTest extends BaseTest {
 
     private static Stream<PlayerRequestDTO> playerDataProvider() {
         return Stream.generate(() -> PlayerTestDataFactory.validPlayerItem().build())
-                .limit(2);
+                .limit(12);
     }
 
     private Stream<PlayerResponseDTO> createdPlayersProvider() {
