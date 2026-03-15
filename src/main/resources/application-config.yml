@@ -1,0 +1,5 @@
+# These values are stored in this configuration file as a test example only.
+# In a real project, sensitive information should be passed through environment variables.
+baseUrl: https://testslotegrator.com
+email: alexandryellow@gmail.com
+password: uRQLyFZqTVKo

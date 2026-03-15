@@ -1,0 +1,68 @@
+plugins {
+    id 'java'
+    alias(libs.plugins.allure)
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation libs.rest.assured
+    implementation platform(libs.allure.bom)
+    implementation libs.bundles.allure
+    implementation libs.log4j.api
+    implementation libs.log4j.core
+    implementation libs.guava
+    implementation libs.snakeyaml
+    implementation libs.slf4j.simple
+    implementation libs.jackson.databind
+    implementation libs.jackson.dataformat.yaml
+
+    testImplementation libs.datafaker
+    testImplementation libs.junit.jupiter.api
+    testImplementation libs.junit.jupiter.params
+
+    testRuntimeOnly libs.junit.jupiter.engine
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+allure {
+    version = libs.versions.allure.get()
+}
+
+test {
+    useJUnitPlatform()
+
+    systemProperties System.getProperties()
+    systemProperties System.getenv()
+
+//    systemProperty 'junit.jupiter.execution.parallel.enabled', 'true'
+//    systemProperty 'junit.jupiter.execution.parallel.mode.default', 'concurrent'
+//    systemProperty 'junit.jupiter.execution.parallel.mode.classes.default', 'concurrent'
+
+    testLogging {
+        events "started", "passed", "skipped", "failed"
+        exceptionFormat = 'full'
+        showCauses = true
+        showExceptions = true
+        showStackTraces = true
+        showStandardStreams = true
+    }
+
+    afterSuite { desc, result ->
+        if (!desc.parent) {
+            println "-------"
+            println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+            println "-------"
+        }
+    }
+}
