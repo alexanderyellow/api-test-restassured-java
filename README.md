@@ -1,88 +1,85 @@
-# API Test Automation Framework (RestAssured + TestNG)
+# API Test Automation Framework with RestAssured & Java
 
-This project is a robust API test automation framework built using **Java**, **RestAssured**, and **TestNG**. It is designed to test RESTful services with a focus on maintainability, scalability, and clear reporting.
+This project is a professional API test automation framework built using **Java**, **RestAssured** and **JUnit 5**. It is designed to test RESTful services with a focus on maintainability, scalability, and clear reporting.
 
-## ✨ Key Features
+## 🚀 Tech Stack
 
-- **Parallel Test Execution**: Leverages TestNG to run tests in parallel, significantly reducing execution time.
+- **Language:** Java 21
+- **Build Tool:** Gradle
+- **API Client:** [RestAssured](https://rest-assured.io/)
+- **Test Runner:** [JUnit 5](https://junit.org/junit5/)
+- **Assertions:** [AssertJ](https://assertj.github.io/doc/)
+- **Reporting:** [Allure Report](https://qameta.io/allure-report/)
+- **Logging:** Log4j2
+- **Data Generation:** [Datafaker](https://www.datafaker.net/)
+- **Serialization:** Jackson
+
+## 📁 Project Structure
+
+```text
+src/
+├── main/
+│   ├── java/org/example/
+│   │   ├── actions/        # Encapsulated API operations (Create, Delete, Get, etc.)
+│   │   ├── actors/         # Represents a user/actor performing actions
+│   │   ├── clients/        # API client configuration (RestAssured specs, filters)
+│   │   ├── config/         # Configuration management (YAML based)
+│   │   ├── model/          # DTOs for requests and responses
+│   │   └── utils/          # Helper utilities
+│   └── resources/          # Configuration files and logging setup
+└── test/
+    ├── java/org/example/
+    │   ├── BaseTest.java   # Common test setup and teardown
+    │   ├── DemoTest.java   # Example test suite
+    │   └── data/           # Test data factories
+```
+
+## 🛠️ Key Architectural Patterns
+
 - **Actor-Action Pattern**: Promotes clean and reusable code by separating user roles (Actors) from their capabilities (Actions).
 - **Declarative API Actions**: Simplifies test creation by encapsulating request/response logic into reusable action classes.
 - **Dynamic Test Data**: Uses Datafaker to generate realistic and unique data for each test run.
 - **Rich Reporting**: Integrates with the Allure Framework to produce detailed and interactive test reports.
 - **Flexible Configuration**: Easily manage environment-specific settings using YAML, with overrides via system properties.
 
-## 🚀 Technology Stack
+## ⚙️ Prerequisites
 
-- **Language**: Java 21+
-- **Build Tool**: Gradle
-- **Testing Framework**: TestNG (for parallel execution and assertions)
-- **API Client**: RestAssured (for HTTP requests and responses)
-- **Reporting**: Allure Framework
-- **Data Generation**: Datafaker (for realistic test data)
-- **Logging**: Log4j2
-- **Configuration**: YAML-based (SnakeYAML)
+- **Java 21** (JDK 21)
+- **Gradle** (using the provided wrapper `./gradlew`)
 
-## ✅ Prerequisites
+## 🏃 Getting Started
 
-- **JDK 21** or higher.
-- **Gradle** is used for dependency management and running tasks (the repository includes a Gradle Wrapper, so no installation is needed).
+### 1. Configuration
+The default configuration is in `src/main/resources/application-config.yml`. You can override values using environment variables:
+- `USER_EMAIL`
+- `USER_PASSWORD`
 
-## 🏗 Project Architecture
-
-The framework follows an **Actor-Action** pattern to separate concerns and improve readability:
-
-- **Actors (`src/main/java/org/example/actors`)**: Represent different user roles (e.g., `Admin`, `Supervisor`, `User`).
-- **Actions (`src/main/java/org/example/actions`)**: Encapsulate atomic API operations (e.g., `CreatePlayerAction`, `DeletePlayerAction`). Each action is responsible for a single request.
-- **Clients (`src/main/java/org/example/clients`)**: Base API client and session management using RestAssured.
-- **Models (`src/main/java/org/example/model`)**: POJOs for request/response serialization and deserialization.
-- **Data Factories (`src/test/java/org/example/data`)**: Utilities to generate random test data using Datafaker.
-
-## 🛠 Configuration
-
-Configuration is managed via `src/main/resources/application-config.yml`. Values can be overridden using System Properties or Environment Variables:
-
-- `baseUrl`: Base URL of the API.
-- `supervisorLogin`: Default supervisor login.
-- `adminLogin`: Default admin login.
-
-Example override:
-```bash
-./gradlew test -DbaseUrl=https://api.staging.example.com
-```
-
-## 🏃 Running Tests
-
-The project uses the Gradle wrapper (`./gradlew`) to ensure a consistent build environment.
-
-### Basic Test Execution
-To compile the code and run all tests:
+### 2. Running Tests
+To run all tests:
 ```bash
 ./gradlew clean test
 ```
 
-### Advanced Options
-You can customize the test run with the following properties:
+To run tests with logging disabled:
+```bash
+./gradlew clean test -Dlogging=false
+```
 
-- **Run in Parallel (with a specific thread count):**
-  ```bash
-  ./gradlew clean test -DthreadCount=5
-  ```
-- **Show Console Logs:**
-  ```bash
-  ./gradlew test -DshowStandardStreams=true
-  ```
+### 3. Generating Reports
+After running tests, generate and open the Allure report:
+```bash
+./gradlew allureReport
+./gradlew allureServe
+```
 
 ## 📊 Reporting
+The framework is fully integrated with **Allure**. Each test execution produces detailed results including:
+- HTTP Request/Response details (with masked sensitive info).
+- Steps and sub-steps.
+- Detailed failure reasons with stack traces.
 
-The project uses **Allure** for detailed test execution reports.
-
-1. **Generate and open the report immediately:**
-   ```bash
-   ./gradlew allureServe
-   ```
-
-2. **Generate the static report:**
-   ```bash
-   ./gradlew allureReport
-   ```
-   The report will be located in `build/reports/allure-report`.
+## 🔗 CI/CD Integration
+This project includes a **GitHub Actions** workflow (`.github/workflows/api-test.yml`) that:
+1. Runs tests on every push/pull request.
+2. Generates and uploads Allure reports as artifacts.
+3. Uses secrets for sensitive credentials.
