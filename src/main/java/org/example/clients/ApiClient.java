@@ -8,6 +8,7 @@ import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import io.restassured.specification.RequestSpecification;
+import org.example.config.AppConfig;
 import org.example.model.Session;
 import org.example.utils.JsonBodyMaskingFilter;
 
@@ -16,17 +17,20 @@ public class ApiClient {
     private final RequestSpecification requestSpec;
     private final Session session;
 
-    public ApiClient(String baseUrl, Session session) {
+    public ApiClient(AppConfig appConfig, Session session) {
         this.session = session;
         LogConfig logConfig = LogConfig.logConfig()
                 .blacklistHeader("Authorization");
 
         RequestSpecBuilder builder = new RequestSpecBuilder()
-                .setBaseUri(baseUrl)
+                .setBaseUri(appConfig.getBaseUrl())
                 .setConfig(RestAssuredConfig.config().logConfig(logConfig))
                 .setContentType(ContentType.JSON)
-                .addFilter(new AllureRestAssured())
-                .addFilter(new JsonBodyMaskingFilter());
+                .addFilter(new AllureRestAssured());
+
+        if (appConfig.isLoggingEnabled()) {
+            builder.addFilter(new JsonBodyMaskingFilter());
+        }
 
         this.requestSpec = builder.build();
     }

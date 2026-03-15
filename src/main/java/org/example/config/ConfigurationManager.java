@@ -48,6 +48,15 @@ public enum ConfigurationManager {
             config.setUserPassword(userPassword);
         }
 
+        String isLoggingEnabled = System.getProperty("logging");
+        if (isLoggingEnabled == null) {
+            isLoggingEnabled = System.getenv("LOGGING");
+        }
+
+        if (isLoggingEnabled != null) {
+            config.setLoggingEnabled(Boolean.parseBoolean(isLoggingEnabled));
+        }
+
     }
 
     public AppConfig getConfig() {

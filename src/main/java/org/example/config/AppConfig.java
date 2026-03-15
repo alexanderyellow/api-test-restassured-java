@@ -6,6 +6,7 @@ public class AppConfig {
     private String baseUrl;
     private String userEmail;
     private String userPassword;
+    private boolean loggingEnabled = true;
 
     public String getBaseUrl() {
         return baseUrl;
@@ -29,5 +30,13 @@ public class AppConfig {
 
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
+    }
+
+    public boolean isLoggingEnabled() {
+        return loggingEnabled;
+    }
+
+    public void setLoggingEnabled(boolean loggingEnabled) {
+        this.loggingEnabled = loggingEnabled;
     }
 }

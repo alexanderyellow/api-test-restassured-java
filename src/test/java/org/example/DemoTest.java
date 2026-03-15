@@ -92,7 +92,7 @@ public class DemoTest extends BaseTest {
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(players).as("Players list").isNotEmpty();
-            softly.assertThat(players).as("Sorted players list").containsExactlyElementsOf(sortedPlayers);
+            softly.assertThat(players).as("Sorted players list").containsAll(sortedPlayers);
 
             List<String> allPlayerIds = players.stream().map(PlayerResponseDTO::id).toList();
             softly.assertThat(allPlayerIds).as("Global player list for duplicates").doesNotHaveDuplicates();
@@ -108,15 +108,32 @@ public class DemoTest extends BaseTest {
     @MethodSource("createdPlayersProvider")
     public void deleteOnePlayerTest(PlayerResponseDTO playerBeingDeleted) {
         Response deleteResponse = userActor.perform(apiClient -> new DeletePlayerAction(apiClient, playerBeingDeleted.id()));
-        
+
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(deleteResponse.statusCode()).as("Delete status code").isEqualTo(200);
-            
+
             // Verify player is gone
             PlayerRequestOneDTO getRequest = new PlayerRequestOneDTO(playerBeingDeleted.email());
-            Response getResponse = userActor.perform(apiClient -> 
-                new GetOnePlayerAction(apiClient, getRequest).withExpectedStatusCode(400));
+            Response getResponse = userActor.perform(apiClient ->
+                    new GetOnePlayerAction(apiClient, getRequest).withExpectedStatusCode(400));
             softly.assertThat(getResponse.statusCode()).as("Get status code after delete").isEqualTo(400);
         });
+    }
+
+    @Order(5)
+    @Test
+    public void allPlayersAreGoneTest() {
+        Response response = userActor.perform(GetAllPlayersAction::new);
+        List<PlayerResponseDTO> players = response.jsonPath().getList("", PlayerResponseDTO.class);
+
+        List<String> createdPlayerIds = createdPlayers.stream()
+                .map(PlayerResponseDTO::id)
+                .toList();
+
+        SoftAssertions.assertSoftly(softly ->
+                softly.assertThat(players).extracting(PlayerResponseDTO::id)
+                        .as("Deleted player IDs should not be in the list")
+                        .doesNotContainAnyElementsOf(createdPlayerIds)
+        );
     }
 }

@@ -8,10 +8,11 @@ public class PlayerTestDataFactory {
 
     public static PlayerRequestDTO.Builder validPlayerItem() {
         String password = faker.credentials().password();
+        Long uniqueString = System.currentTimeMillis();
 
         return PlayerRequestDTO.builder()
                 .currencyCode(faker.money().currency())
-                .email(faker.internet().emailAddress())
+                .email(faker.internet().emailAddress(uniqueString.toString()))
                 .name(faker.name().firstName())
                 .passwordChange(password)
                 .passwordRepeat(password)
