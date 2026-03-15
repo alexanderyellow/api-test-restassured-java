@@ -25,6 +25,7 @@ public class JsonBodyMaskingFilter implements Filter {
     private static final Logger logger = LogManager.getLogger("RestAssuredLogger");
     private static final ObjectMapper mapper = new ObjectMapper();
     private final List<String> fieldsToMask = Arrays.asList("password", "email", "accessToken");
+    private final static String MASK = "[****]";
 
     @Override
     public Response filter(FilterableRequestSpecification requestSpec,
@@ -83,7 +84,7 @@ public class JsonBodyMaskingFilter implements Filter {
 
             for (Map.Entry<String, JsonNode> field : objectNode.properties()) {
                 if (fieldsToMask.contains(field.getKey())) {
-                    objectNode.put(field.getKey(), "[****]");
+                    objectNode.put(field.getKey(), MASK);
                 } else {
                     maskNode(field.getValue());
                 }
@@ -104,7 +105,7 @@ public class JsonBodyMaskingFilter implements Filter {
         return headers.asList().stream()
                 .map(header -> {
                     if (blacklistedHeaders.stream().anyMatch(bh -> bh.equalsIgnoreCase(header.getName()))) {
-                        return header.getName() + "=[****]";
+                        return header.getName() + ": " + MASK;
                     }
                     return header.toString();
                 })

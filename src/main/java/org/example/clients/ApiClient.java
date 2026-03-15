@@ -25,8 +25,8 @@ public class ApiClient {
                 .setBaseUri(baseUrl)
                 .setConfig(RestAssuredConfig.config().logConfig(logConfig))
                 .setContentType(ContentType.JSON)
-                .addFilter(new JsonBodyMaskingFilter())
-                .addFilter(new AllureRestAssured());
+                .addFilter(new AllureRestAssured())
+                .addFilter(new JsonBodyMaskingFilter());
 
         this.requestSpec = builder.build();
     }
