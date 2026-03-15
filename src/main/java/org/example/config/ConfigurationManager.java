@@ -5,8 +5,6 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.InputStream;
-import java.time.Duration;
-import java.util.Map;
 
 /// Manages the application's configuration.
 public enum ConfigurationManager {
@@ -16,9 +14,7 @@ public enum ConfigurationManager {
     private final AppConfig config;
 
     ConfigurationManager() {
-        try (InputStream inputStream =
-                     getClass().getClassLoader().getResourceAsStream(CONFIG_FILE)) {
-
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(CONFIG_FILE)) {
             if (inputStream == null) {
                 throw new RuntimeException(String.format("%s not found in classpath", CONFIG_FILE));
             }
@@ -42,14 +38,14 @@ public enum ConfigurationManager {
             config.setBaseUrl(baseUrl);
         }
 
-        String userEmail = System.getenv("email");
+        String userEmail = System.getenv("USER_EMAIL");
         if (userEmail != null) {
-            config.setEmail(userEmail);
+            config.setUserEmail(userEmail);
         }
 
-        String userPassword = System.getenv("password");
+        String userPassword = System.getenv("USER_PASSWORD");
         if (userPassword != null) {
-            config.setPassword(userPassword);
+            config.setUserPassword(userPassword);
         }
 
     }

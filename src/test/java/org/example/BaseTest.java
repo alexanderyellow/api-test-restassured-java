@@ -23,7 +23,7 @@ public class BaseTest {
 
     @BeforeAll
     public void globalSetUp() {
-        CredentialsDTO credentials = new CredentialsDTO(config.getEmail(), config.getPassword());
+        CredentialsDTO credentials = new CredentialsDTO(config.getUserEmail(), config.getUserPassword());
         userActor = new Actor(config, credentials).login();
     }
 }

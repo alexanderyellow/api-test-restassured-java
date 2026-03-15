@@ -1,12 +1,11 @@
 package org.example.config;
 
-import org.example.model.User;
 
 /// Represents the application configuration.
 public class AppConfig {
     private String baseUrl;
-    private String email;
-    private String password;
+    private String userEmail;
+    private String userPassword;
 
     public String getBaseUrl() {
         return baseUrl;
@@ -16,19 +15,19 @@ public class AppConfig {
         this.baseUrl = baseUrl;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
-    public String getPassword() {
-        return password;
+    public String getUserPassword() {
+        return userPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 }

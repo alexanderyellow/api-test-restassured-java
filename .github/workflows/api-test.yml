@@ -15,6 +15,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Map GitHub Secrets to local environment variables
+        env:
+          EMAIL: ${{ secrets.USER_EMAIL }}
+          PASSWORD: ${{ secrets.USER_PASSWORD }}
+
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
