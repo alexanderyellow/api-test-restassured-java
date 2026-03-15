@@ -2,6 +2,8 @@
 <#-- @ftlvariable name="data" type="io.qameta.allure.attachment.http.HttpResponseAttachment" -->
 <div>Status code: <#if data.responseCode??>${data.responseCode}<#else>Unknown</#if></div>
 
+<#assign isLoginRequest = (data.url?? && data.url?contains("/login"))>
+
 <#if data.url??>
     <div>URL: ${data.url}</div>
 </#if>
@@ -10,7 +12,12 @@
     <h4>Body</h4>
     <div>
         <pre class="preformated-text">
-<#t>${data.body?replace('"(email|password|accessToken)"\\s*:\\s*"[^"]+"', '"$1": "****"', 'r')}
+<#assign maskedBody = data.body>
+<#if isLoginRequest>
+    <#assign maskedBody = maskedBody?replace('"(email|password)"\\s*:\\s*"[^"]+"', '"$1": "****"', 'r')>
+</#if>
+<#assign maskedBody = maskedBody?replace('"accessToken"\\s*:\\s*"[^"]+"', '"accessToken": "****"', 'r')>
+<#t>${maskedBody}
         </pre>
     </div>
 </#if>

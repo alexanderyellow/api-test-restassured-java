@@ -31,6 +31,7 @@ public class JsonBodyMaskingFilter implements Filter {
     public Response filter(FilterableRequestSpecification requestSpec,
                            FilterableResponseSpecification responseSpec,
                            FilterContext ctx) {
+        boolean isLoginRequest = requestSpec.getURI().contains("/login");
         Set<String> blacklistedHeaders = requestSpec.getConfig().getLogConfig().blacklistedHeaders();
 
         StringBuilder requestLogBuilder = new StringBuilder(
@@ -43,7 +44,7 @@ public class JsonBodyMaskingFilter implements Filter {
             String requestBody = requestSpec.getBody().toString();
             requestLogBuilder
                     .append("\nBody:\n")
-                    .append(maskSensitiveFields(requestBody));
+                    .append(processBody(requestBody, isLoginRequest));
         }
         logger.info(requestLogBuilder);
 
@@ -57,7 +58,7 @@ public class JsonBodyMaskingFilter implements Filter {
         if (responseBody != null && !responseBody.trim().isEmpty()) {
             responseLogBuilder
                     .append("\nBody:\n")
-                    .append(maskSensitiveFields(responseBody));
+                    .append(processBody(responseBody, isLoginRequest));
         }
         responseLogBuilder.append("\n==================\n");
         logger.info(responseLogBuilder);
@@ -65,11 +66,13 @@ public class JsonBodyMaskingFilter implements Filter {
         return response;
     }
 
-    /// Parses the JSON string into a tree, masks it, and prints it back to a string.
-    private String maskSensitiveFields(String body) {
+    /// Parses the JSON string into a tree, optionally masks it, and prints it back to a string.
+    private String processBody(String body, boolean shouldMask) {
         try {
             JsonNode rootNode = mapper.readTree(body);
-            maskNode(rootNode);
+            if (shouldMask) {
+                maskNode(rootNode);
+            }
 
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
         } catch (Exception e) {

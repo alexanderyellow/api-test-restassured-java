@@ -53,7 +53,7 @@ public class DemoTest extends BaseTest {
                 softly.assertThat(playerResponseDTO.currencyCode()).as("Currency Code").isEqualTo(playerRequestDTO.getCurrencyCode());
                 softly.assertThat(playerResponseDTO.passwordChange()).as("Password Change").isEqualTo(playerRequestDTO.getPasswordChange());
                 softly.assertThat(playerResponseDTO.passwordRepeat()).as("Password Repeat").isEqualTo(playerRequestDTO.getPasswordRepeat());
-                softly.assertThat(playerResponseDTO.v()).as("Version (__v)").isNotNull();
+                softly.assertThat(playerResponseDTO.v()).as("Version").isNotNull();
             });
 
             createdPlayers.add(playerResponseDTO);

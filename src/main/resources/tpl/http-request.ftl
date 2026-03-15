@@ -2,11 +2,17 @@
 <#-- @ftlvariable name="data" type="io.qameta.allure.attachment.http.HttpRequestAttachment" -->
 <div><#if data.method??>${data.method}<#else>GET</#if> to <#if data.url??>${data.url}<#else>Unknown</#if></div>
 
+<#assign isLoginRequest = (data.url?? && data.url?contains("/login"))>
+
 <#if data.body??>
     <h4>Body</h4>
     <div>
         <pre class="preformated-text">
+<#if isLoginRequest>
 <#t>${data.body?replace('"(email|password|accessToken)"\\s*:\\s*"[^"]+"', '"$1": "****"', 'r')}
+<#else>
+<#t>${data.body}
+</#if>
         </pre>
     </div>
 </#if>
@@ -33,7 +39,11 @@
     <h4>Curl</h4>
     <div>
         <pre class="preformated-text">
+<#if isLoginRequest>
 <#t>${data.curl?replace('(-H "Authorization: )([^"]+)"', '$1****"', 'r')?replace('"(email|password|accessToken)"\\s*:\\s*"[^"]+"', '"$1": "****"', 'r')}
+<#else>
+<#t>${data.curl?replace('(-H "Authorization: )([^"]+)"', '$1****"', 'r')}
+</#if>
         </pre>
     </div>
 </#if>
