@@ -21,7 +21,7 @@ public class Actor {
 
     public Actor(AppConfig appConfig, CredentialsDTO credentials) {
         this.credentials = credentials;
-        this.apiClient = new ApiClient(appConfig.getBaseUrl(), session, appConfig.isLoggingEnabled());
+        this.apiClient = new ApiClient(appConfig, session);
     }
 
     public Actor login() {
