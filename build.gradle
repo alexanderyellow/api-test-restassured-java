@@ -25,6 +25,7 @@ dependencies {
     testImplementation libs.datafaker
     testImplementation libs.junit.jupiter.api
     testImplementation libs.junit.jupiter.params
+    testImplementation libs.assertj.core
 
     testRuntimeOnly libs.junit.jupiter.engine
 }

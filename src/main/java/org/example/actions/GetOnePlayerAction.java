@@ -6,7 +6,7 @@ import org.example.model.PlayerRequestOneDTO;
 
 /// Action to retrieve a player by email.
 public class GetOnePlayerAction extends AbstractAction {
-    private static final String END_POINT = "/api/automationTask/getOne";
+    private static final String END_POINT = "/automationTask/getOne";
     private static final int EXPECTED_STATUS_CODE = 201;
 
     private final PlayerRequestOneDTO playerRequestOneDTO;

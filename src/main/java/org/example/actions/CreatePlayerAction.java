@@ -8,7 +8,7 @@ import java.util.Map;
 
 /// Action to create a new player.
 public class CreatePlayerAction extends AbstractAction {
-    private static final String END_POINT = "/api/automationTask/create";
+    private static final String END_POINT = "/automationTask/create";
     private static final int EXPECTED_STATUS_CODE = 201;
 
     private final PlayerRequestDTO playerBeingCreated;

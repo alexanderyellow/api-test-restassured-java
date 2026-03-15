@@ -5,7 +5,7 @@ import org.example.clients.ApiClient;
 import org.example.model.CredentialsDTO;
 
 public class LoginAction extends AbstractAction {
-    private static final String END_POINT = "/api/tester/login";
+    private static final String END_POINT = "/tester/login";
     private static final int EXPECTED_STATUS_CODE = 201;
 
     private final CredentialsDTO credentials;

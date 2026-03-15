@@ -5,7 +5,7 @@ import org.example.clients.ApiClient;
 
 /// Action to retrieve all players.
 public class GetAllPlayersAction extends AbstractAction {
-    private static final String END_POINT = "/api/automationTask/getAll";
+    private static final String END_POINT = "/automationTask/getAll";
     private static final int EXPECTED_STATUS_CODE = 200;
 
     public GetAllPlayersAction(ApiClient apiClient) {
