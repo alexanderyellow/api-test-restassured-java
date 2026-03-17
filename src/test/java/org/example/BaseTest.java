@@ -19,11 +19,11 @@ import java.util.concurrent.TimeUnit;
 public class BaseTest {
 
     protected AppConfig config = ConfigurationManager.INSTANCE.getConfig();
-    protected Actor userActor;
+    protected Actor admin;
 
     @BeforeAll
     public void globalSetUp() {
         CredentialsDTO credentials = new CredentialsDTO(config.getUserEmail(), config.getUserPassword());
-        userActor = new Actor(config, credentials).login();
+        admin = new Actor(config, credentials).login();
     }
 }
