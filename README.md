@@ -1,85 +1,86 @@
-# API Test Automation Framework with RestAssured & Java
+# API Test Automation Framework (RestAssured + Actor-Action Pattern)
 
-This project is a professional API test automation framework built using **Java**, **RestAssured** and **JUnit 5**. It is designed to test RESTful services with a focus on maintainability, scalability, and clear reporting.
+A modern, highly scalable API test automation framework built with **Java 21**, **RestAssured**, and **JUnit 5**. This project implements the **Actor-Action Pattern**, providing a clean separation between "who" performs an operation and "what" that operation is.
 
 ## 🚀 Tech Stack
 
-- **Language:** Java 21
-- **Build Tool:** Gradle
+- **Core:** Java 21, Gradle
 - **API Client:** [RestAssured](https://rest-assured.io/)
-- **Test Runner:** [JUnit 5](https://junit.org/junit5/)
-- **Assertions:** [AssertJ](https://assertj.github.io/doc/)
+- **Test Runner:** [JUnit 5](https://junit.org/junit5/) (Parallel Execution enabled)
+- **Assertions:** [AssertJ](https://assertj.github.io/doc/) (Fluent assertions & Soft Assertions)
 - **Reporting:** [Allure Report](https://qameta.io/allure-report/)
-- **Logging:** Log4j2
 - **Data Generation:** [Datafaker](https://www.datafaker.net/)
-- **Serialization:** Jackson
+- **Serialization:** Jackson (JSON/YAML)
 
-## 📁 Project Structure
+## 📁 Project Architecture
+
+The framework follows a modular structure to ensure maintainability:
 
 ```text
-src/
-├── main/
-│   ├── java/org/example/
-│   │   ├── actions/        # Encapsulated API operations (Create, Delete, Get, etc.)
-│   │   ├── actors/         # Represents a user/actor performing actions
-│   │   ├── clients/        # API client configuration (RestAssured specs, filters)
-│   │   ├── config/         # Configuration management (YAML based)
-│   │   ├── model/          # DTOs for requests and responses
-│   │   └── utils/          # Helper utilities
-│   └── resources/          # Configuration files and logging setup
-└── test/
-    ├── java/org/example/
-    │   ├── BaseTest.java   # Common test setup and teardown
-    │   ├── DemoTest.java   # Example test suite
-    │   └── data/           # Test data factories
+src/main/java/org/example/
+├── actions/        # Atomic API operations (Encapsulated Request/Response logic)
+├── actors/         # Actors that hold state (Session/Tokens) and perform Actions
+├── clients/        # Base API Client, Request/Response Specs, and Filters
+├── config/         # Typesafe Configuration Manager (YAML-based)
+├── model/          # DTOs (Data Transfer Objects) for API Payloads
+└── utils/          # Custom Filters (e.g., Sensitive Data Masking)
 ```
 
-## 🛠️ Key Architectural Patterns
+## 🏗️ Key Design Patterns
 
-- **Actor-Action Pattern**: Promotes clean and reusable code by separating user roles (Actors) from their capabilities (Actions).
-- **Declarative API Actions**: Simplifies test creation by encapsulating request/response logic into reusable action classes.
-- **Dynamic Test Data**: Uses Datafaker to generate realistic and unique data for each test run.
-- **Rich Reporting**: Integrates with the Allure Framework to produce detailed and interactive test reports.
-- **Flexible Configuration**: Easily manage environment-specific settings using YAML, with overrides via system properties.
+### 1. Actor-Action Pattern
+Unlike traditional approaches, this framework uses **Actors**:
+- **Actor**: Represents a user or system entity. It maintains state (like Authentication Tokens) and provides a `perform()` method.
+- **Action**: Represents a single API interaction (e.g., `CreatePlayerAction`). It encapsulates the endpoint, method, headers, and body.
 
-## ⚙️ Prerequisites
+**Example Usage in Tests:**
+```java
+PlayerResponseDTO response = admin.perform(apiClient -> 
+    new CreatePlayerAction(apiClient, playerRequestDTO)
+).as(PlayerResponseDTO.class);
+```
 
-- **Java 21** (JDK 21)
-- **Gradle** (using the provided wrapper `./gradlew`)
+### 2. Fluent Action Configuration
+Actions can be configured fluently, allowing for custom status code validation or parameter overrides:
+```java
+admin.perform(apiClient -> 
+    new CreatePlayerAction(apiClient, duplicateRequest)
+        .withExpectedStatusCode(400)
+);
+```
+
+### 3. Data-Driven Testing
+Integration with **Datafaker** and JUnit 5 **Parameterized Tests** allows for robust load and boundary testing:
+- `PlayerTestDataFactory` generates unique, valid, and invalid data sets dynamically.
 
 ## 🏃 Getting Started
 
-### 1. Configuration
-The default configuration is in `src/main/resources/application-config.yml`. You can override values using environment variables:
+### Prerequisites
+- **JDK 21**
+- **Gradle** (included wrapper)
+
+### Environment Configuration
+The framework uses `src/main/resources/application-config.yml`. Sensitive values should be passed via Environment Variables or System Properties:
 - `USER_EMAIL`
 - `USER_PASSWORD`
 
-### 2. Running Tests
-To run all tests:
-```bash
-./gradlew clean test
+### Execution Commands
+
+| Task | Command |
+| :--- | :--- |
+| **Run All Tests** | `./gradlew clean test` |
+| **Run with Allure** | `./gradlew clean test allureReport` |
+| **Open Report** | `./gradlew allureServe` |
+| **Silent Logging** | `./gradlew test -Dlogging=false` |
+
+## 📊 Parallel Execution
+Parallel execution is enabled by default in `build.gradle` using a fixed strategy (default: 5 threads). Individual test classes or methods can further control concurrency using JUnit 5 annotations:
+```java
+@Execution(ExecutionMode.CONCURRENT)
 ```
 
-To run tests with logging disabled:
-```bash
-./gradlew clean test -Dlogging=false
-```
-
-### 3. Generating Reports
-After running tests, generate and open the Allure report:
-```bash
-./gradlew allureReport
-./gradlew allureServe
-```
-
-## 📊 Reporting
-The framework is fully integrated with **Allure**. Each test execution produces detailed results including:
-- HTTP Request/Response details (with masked sensitive info).
-- Steps and sub-steps.
-- Detailed failure reasons with stack traces.
-
-## 🔗 CI/CD Integration
-This project includes a **GitHub Actions** workflow (`.github/workflows/api-test.yml`) that:
-1. Runs tests on every push/pull request.
-2. Generates and uploads Allure reports as artifacts.
-3. Uses secrets for sensitive credentials.
+## ☁️ CI/CD Integration
+Automated testing is integrated via **GitHub Actions** (`.github/workflows/api-test.yml`). It:
+1. Executes tests on JDK 21.
+2. Uses GitHub Secrets for credentials.
+3. Publishes Allure Reports as build artifacts for 20 days.
