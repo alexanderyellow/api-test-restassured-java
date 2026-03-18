@@ -24,8 +24,9 @@ public class DeleteOnePlayerTest extends BaseTest {
     @BeforeAll
     public void setUp() {
         PlayerRequestDTO playerRequestDTO = PlayerTestDataFactory.validPlayerItem().build();
-        expectedPlayer = admin
-                .perform(apiClient -> new CreatePlayerAction(apiClient, playerRequestDTO))
+        expectedPlayer = admin.perform(apiClient ->
+                        new CreatePlayerAction(apiClient, playerRequestDTO)
+                )
                 .as(PlayerResponseDTO.class);
     }
 

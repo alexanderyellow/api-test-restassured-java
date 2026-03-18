@@ -30,8 +30,9 @@ public class CreatePlayerTest extends BaseTest {
     @MethodSource("playerDataProvider")
     @Execution(ExecutionMode.CONCURRENT)
     public void createPlayerTest(PlayerRequestDTO playerRequestDTO) {
-        PlayerResponseDTO playerResponseDTO = admin
-                .perform(apiClient -> new CreatePlayerAction(apiClient, playerRequestDTO))
+        PlayerResponseDTO playerResponseDTO = admin.perform(apiClient ->
+                        new CreatePlayerAction(apiClient, playerRequestDTO)
+                )
                 .as(PlayerResponseDTO.class);
 
         createdPlayers.add(playerResponseDTO);
@@ -53,8 +54,9 @@ public class CreatePlayerTest extends BaseTest {
     @Test
     public void createPlayerWithExistingEmailTest() {
         PlayerRequestDTO firstPlayerRequest = PlayerTestDataFactory.validPlayerItem().build();
-        PlayerResponseDTO firstPlayerResponse = admin
-                .perform(apiClient -> new CreatePlayerAction(apiClient, firstPlayerRequest))
+        PlayerResponseDTO firstPlayerResponse = admin.perform(apiClient ->
+                        new CreatePlayerAction(apiClient, firstPlayerRequest)
+                )
                 .as(PlayerResponseDTO.class);
         createdPlayers.add(firstPlayerResponse);
 
@@ -63,11 +65,10 @@ public class CreatePlayerTest extends BaseTest {
                 .email(firstPlayerRequest.getEmail())
                 .build();
 
-        admin
-                .perform(apiClient ->
-                        new CreatePlayerAction(apiClient, secondPlayerRequest)
-                                .withExpectedStatusCode(400)
-                );
+        admin.perform(apiClient ->
+                new CreatePlayerAction(apiClient, secondPlayerRequest)
+                        .withExpectedStatusCode(400)
+        );
     }
 
     @AfterAll

@@ -53,9 +53,8 @@ public class GetAllPlayersTest extends BaseTest {
 
     @AfterAll
     public void cleanUp() {
-        createdPlayers
-                .forEach(playerBeingDeleted ->
-                        admin.perform(apiClient -> new DeletePlayerAction(apiClient, playerBeingDeleted.id()))
-                );
+        createdPlayers.forEach(playerBeingDeleted ->
+                admin.perform(apiClient -> new DeletePlayerAction(apiClient, playerBeingDeleted.id()))
+        );
     }
 }
