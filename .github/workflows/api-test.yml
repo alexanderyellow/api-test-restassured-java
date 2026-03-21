@@ -11,8 +11,8 @@ jobs:
     name: Run API Tests
     runs-on: ubuntu-latest
     env:
-      auth.email: ${{ secrets.USER_EMAIL }}
-      auth.password: ${{ secrets.USER_PASSWORD }}
+      AUTH_EMAIL: ${{ secrets.USER_EMAIL }}
+      AUTH_PASSWORD: ${{ secrets.USER_PASSWORD }}
 
     steps:
       - name: Checkout repository
