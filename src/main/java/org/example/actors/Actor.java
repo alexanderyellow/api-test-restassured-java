@@ -7,7 +7,6 @@ import org.example.clients.ApiClient;
 import org.example.model.CredentialsDTO;
 import org.example.model.LoginResponseDTO;
 import org.example.model.Session;
-import org.example.config.AppConfig;
 import org.example.model.User;
 
 import java.util.function.Function;
@@ -19,9 +18,9 @@ public class Actor {
     private User user;
     private final Session session = new Session();
 
-    public Actor(AppConfig appConfig, CredentialsDTO credentials) {
+    public Actor(CredentialsDTO credentials) {
         this.credentials = credentials;
-        this.apiClient = new ApiClient(appConfig, session);
+        this.apiClient = new ApiClient(session);
     }
 
     public Actor login() {

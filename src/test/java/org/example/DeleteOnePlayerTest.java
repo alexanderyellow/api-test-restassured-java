@@ -1,22 +1,17 @@
 package org.example;
 
-import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.SoftAssertions;
 import org.example.actions.CreatePlayerAction;
 import org.example.actions.DeletePlayerAction;
 import org.example.actions.GetAllPlayersAction;
-import org.example.actions.GetOnePlayerAction;
 import org.example.data.PlayerTestDataFactory;
 import org.example.model.PlayerRequestDTO;
-import org.example.model.PlayerRequestOneDTO;
 import org.example.model.PlayerResponseDTO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class DeleteOnePlayerTest extends BaseTest {
     private PlayerResponseDTO expectedPlayer;

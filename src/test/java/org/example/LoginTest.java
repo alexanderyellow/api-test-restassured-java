@@ -15,15 +15,15 @@ public class LoginTest extends BaseTest {
 
     @Test
     public void successLoginTest() {
-        CredentialsDTO credentials = new CredentialsDTO(config.getUserEmail(), config.getUserPassword());
-        Actor correctActor = new Actor(config, credentials);
+        CredentialsDTO credentials = new CredentialsDTO(config.auth().email(), config.auth().password());
+        Actor correctActor = new Actor(credentials);
 
         Response response = correctActor.perform(apiClient -> new LoginAction(apiClient, credentials));
         LoginResponseDTO loginResponse = response.as(LoginResponseDTO.class);
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(loginResponse.accessToken()).isNotEmpty();
-            softly.assertThat(loginResponse.user().email()).isEqualTo(config.getUserEmail());
+            softly.assertThat(loginResponse.user().email()).isEqualTo(config.auth().email());
         });
     }
 
@@ -31,7 +31,7 @@ public class LoginTest extends BaseTest {
     public void failureLoginTest() {
         Faker faker = new Faker();
         CredentialsDTO credentials = new CredentialsDTO(faker.internet().emailAddress(), faker.credentials().password());
-        Actor incorrectActor = new Actor(config, credentials);
+        Actor incorrectActor = new Actor(credentials);
 
         Response response = incorrectActor.perform(apiClient ->
                 new LoginAction(apiClient, credentials)

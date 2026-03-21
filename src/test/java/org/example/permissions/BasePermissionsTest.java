@@ -11,7 +11,7 @@ public class BasePermissionsTest extends BaseTest {
 
     @BeforeAll
     public void createNotAuthenticatedActor() {
-        CredentialsDTO credentials = new CredentialsDTO(config.getUserEmail(), config.getUserPassword());
-        notAuthenticatedActor = new Actor(config, credentials);
+        CredentialsDTO credentials = new CredentialsDTO(config.auth().email(), config.auth().password());
+        notAuthenticatedActor = new Actor(credentials);
     }
 }

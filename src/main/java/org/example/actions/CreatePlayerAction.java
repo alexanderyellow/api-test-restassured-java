@@ -4,7 +4,6 @@ import io.restassured.response.Response;
 import org.example.clients.ApiClient;
 import org.example.model.PlayerRequestDTO;
 
-import java.util.Map;
 
 /// Action to create a new player.
 public class CreatePlayerAction extends AbstractAction {

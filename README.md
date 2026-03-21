@@ -10,7 +10,8 @@ A modern, highly scalable API test automation framework built with **Java 21**, 
 - **Assertions:** [AssertJ](https://assertj.github.io/doc/) (Fluent assertions & Soft Assertions)
 - **Reporting:** [Allure Report](https://qameta.io/allure-report/)
 - **Data Generation:** [Datafaker](https://www.datafaker.net/)
-- **Serialization:** Jackson (JSON/YAML)
+- **Serialization:** Jackson (JSON)
+- **Configuration:** SmallRye Config (YAML + Environment Variables + System Properties)
 
 ## 📁 Project Architecture
 
@@ -21,7 +22,7 @@ src/main/java/org/example/
 ├── actions/        # Atomic API operations (Encapsulated Request/Response logic)
 ├── actors/         # Actors that hold state (Session/Tokens) and perform Actions
 ├── clients/        # Base API Client, Request/Response Specs, and Filters
-├── config/         # Typesafe Configuration Manager (YAML-based)
+├── config/         # SmallRye Config bootstrap and access layer
 ├── model/          # DTOs (Data Transfer Objects) for API Payloads
 └── utils/          # Custom Filters (e.g., Sensitive Data Masking)
 ```
@@ -60,9 +61,11 @@ Integration with **Datafaker** and JUnit 5 **Parameterized Tests** allows for ro
 - **Gradle** (included wrapper)
 
 ### Environment Configuration
-The framework uses `src/main/resources/application-config.yml`. Sensitive values should be passed via Environment Variables or System Properties:
-- `USER_EMAIL`
-- `USER_PASSWORD`
+The framework uses `src/main/resources/application.yml` as the default config file. Override values with standard SmallRye configuration sources:
+- Environment Variables: `AUTH_EMAIL`, `AUTH_PASSWORD`, `API_BASE_URL`, `LOGGING_ENABLED`
+- System Properties: `-Dauth.email=...`, `-Dauth.password=...`, `-Dapi.base-url=...`, `-Dlogging.enabled=false`
+- Optional profile: `SMALLRYE_CONFIG_PROFILE=local`
+- Optional extra config file: `SMALLRYE_CONFIG_LOCATIONS=file:/absolute/path/to/application.yml`
 
 ### Execution Commands
 
@@ -71,7 +74,7 @@ The framework uses `src/main/resources/application-config.yml`. Sensitive values
 | **Run All Tests** | `./gradlew clean test` |
 | **Run with Allure** | `./gradlew clean test allureReport` |
 | **Open Report** | `./gradlew allureServe` |
-| **Silent Logging** | `./gradlew test -Dlogging=false` |
+| **Silent Logging** | `./gradlew test -Dlogging.enabled=false` |
 
 ## 📊 Parallel Execution
 Parallel execution is enabled by default in `build.gradle` using a fixed strategy (default: 5 threads). Individual test classes or methods can further control concurrency using JUnit 5 annotations:
