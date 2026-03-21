@@ -47,7 +47,7 @@ public class GetOnePlayerTest extends BaseTest {
     public void getOnePlayerNotFoundTest() {
         Faker faker = new Faker();
         GetPlayerRequest request = new GetPlayerRequest(faker.internet().emailAddress());
-        Response response = admin.post(Endpoints.GET_ONE_PLAYER, request, 400);
+        admin.post(Endpoints.GET_ONE_PLAYER, request, 400);
     }
 
     @AfterAll
