@@ -2,7 +2,7 @@ package org.example.permissions;
 
 import org.example.BaseTest;
 import org.example.actors.Actor;
-import org.example.model.CredentialsDTO;
+import org.example.model.request.LoginRequest;
 import org.junit.jupiter.api.BeforeAll;
 
 
@@ -11,7 +11,7 @@ public class BasePermissionsTest extends BaseTest {
 
     @BeforeAll
     public void createNotAuthenticatedActor() {
-        CredentialsDTO credentials = new CredentialsDTO(config.auth().email(), config.auth().password());
+        LoginRequest credentials = new LoginRequest(config.auth().email(), config.auth().password());
         notAuthenticatedActor = new Actor(credentials);
     }
 }

@@ -3,13 +3,11 @@ package org.example;
 import io.restassured.response.Response;
 import net.datafaker.Faker;
 import org.assertj.core.api.SoftAssertions;
-import org.example.actions.CreatePlayerAction;
-import org.example.actions.DeletePlayerAction;
-import org.example.actions.GetOnePlayerAction;
+import org.example.actions.Endpoints;
 import org.example.data.PlayerTestDataFactory;
-import org.example.model.PlayerRequestDTO;
-import org.example.model.PlayerRequestOneDTO;
-import org.example.model.PlayerResponseDTO;
+import org.example.model.request.CreatePlayerRequest;
+import org.example.model.request.GetPlayerRequest;
+import org.example.model.response.PlayerResponse;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,23 +16,22 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class GetOnePlayerTest extends BaseTest {
 
-    private PlayerResponseDTO expectedPlayer;
+    private PlayerResponse expectedPlayer;
 
     @BeforeAll
     public void setUp() {
-        PlayerRequestDTO playerRequestDTO = PlayerTestDataFactory.validPlayerItem().build();
-        expectedPlayer = admin.perform(apiClient ->
-                        new CreatePlayerAction(apiClient, playerRequestDTO)
-                )
-                .as(PlayerResponseDTO.class);
+        CreatePlayerRequest playerRequestDTO = PlayerTestDataFactory.validPlayerItem().build();
+        expectedPlayer = admin
+                .post(Endpoints.CREATE_PLAYER, playerRequestDTO)
+                .as(PlayerResponse.class);
     }
 
     @Test
     public void getOnePlayerTest() {
-        PlayerRequestOneDTO request = new PlayerRequestOneDTO(expectedPlayer.email());
-        PlayerResponseDTO actualPlayer = admin
-                .perform(apiClient -> new GetOnePlayerAction(apiClient, request))
-                .as(PlayerResponseDTO.class);
+        GetPlayerRequest request = new GetPlayerRequest(expectedPlayer.email());
+        PlayerResponse actualPlayer = admin
+                .post(Endpoints.GET_ONE_PLAYER, request)
+                .as(PlayerResponse.class);
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(actualPlayer.id()).as("ID").isEqualTo(expectedPlayer.id());
@@ -49,17 +46,14 @@ public class GetOnePlayerTest extends BaseTest {
     @Test
     public void getOnePlayerNotFoundTest() {
         Faker faker = new Faker();
-        PlayerRequestOneDTO request = new PlayerRequestOneDTO(faker.internet().emailAddress());
-        Response response = admin.perform(apiClient ->
-                new GetOnePlayerAction(apiClient, request)
-                        .withExpectedStatusCode(400)
-        );
+        GetPlayerRequest request = new GetPlayerRequest(faker.internet().emailAddress());
+        Response response = admin.post(Endpoints.GET_ONE_PLAYER, request, 400);
 
         assertThat(response.jsonPath().getString("path")).isEqualTo("/automationTask/getOne");
     }
 
     @AfterAll
     public void cleanUp() {
-        admin.perform(apiClient -> new DeletePlayerAction(apiClient, expectedPlayer.id()));
+        admin.delete(Endpoints.DELETE_PLAYER, expectedPlayer.id());
     }
 }

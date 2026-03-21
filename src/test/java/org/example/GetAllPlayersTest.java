@@ -1,11 +1,9 @@
 package org.example;
 
 import org.assertj.core.api.SoftAssertions;
-import org.example.actions.CreatePlayerAction;
-import org.example.actions.DeletePlayerAction;
-import org.example.actions.GetAllPlayersAction;
+import org.example.actions.Endpoints;
 import org.example.data.PlayerTestDataFactory;
-import org.example.model.PlayerResponseDTO;
+import org.example.model.response.PlayerResponse;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,27 +15,27 @@ import java.util.stream.Stream;
 
 public class GetAllPlayersTest extends BaseTest {
 
-    private final List<PlayerResponseDTO> createdPlayers = new CopyOnWriteArrayList<>();
+    private final List<PlayerResponse> createdPlayers = new CopyOnWriteArrayList<>();
 
     @BeforeAll
     public void setUp() {
         Stream.generate(() -> PlayerTestDataFactory.validPlayerItem().build())
                 .limit(3)
                 .forEach(playerBeingCreated -> {
-                    PlayerResponseDTO playerResponseDTO = admin
-                            .perform(apiClient -> new CreatePlayerAction(apiClient, playerBeingCreated))
-                            .as(PlayerResponseDTO.class);
+                    PlayerResponse playerResponseDTO = admin
+                            .post(Endpoints.CREATE_PLAYER, playerBeingCreated)
+                            .as(PlayerResponse.class);
                     createdPlayers.add(playerResponseDTO);
                 });
     }
 
     @Test
     public void getAllPlayersTest() {
-        List<PlayerResponseDTO> actualSortedPlayersList = admin.perform(GetAllPlayersAction::new)
+        List<PlayerResponse> actualSortedPlayersList = admin.get(Endpoints.GET_ALL_PLAYERS)
                 .jsonPath()
-                .getList("", PlayerResponseDTO.class)
+                .getList("", PlayerResponse.class)
                 .stream()
-                .sorted(Comparator.comparing(PlayerResponseDTO::name, Comparator.nullsFirst(Comparator.naturalOrder())))
+                .sorted(Comparator.comparing(PlayerResponse::name, Comparator.nullsFirst(Comparator.naturalOrder())))
                 .toList();
 
         SoftAssertions.assertSoftly(softly -> {
@@ -45,7 +43,7 @@ public class GetAllPlayersTest extends BaseTest {
             softly.assertThat(actualSortedPlayersList).as("Sorted players list")
                     .usingRecursiveFieldByFieldElementComparatorIgnoringFields("passwordChange", "passwordRepeat", "v")
                     .containsAll(createdPlayers);
-            softly.assertThat(actualSortedPlayersList).extracting(PlayerResponseDTO::id)
+            softly.assertThat(actualSortedPlayersList).extracting(PlayerResponse::id)
                     .as("Global player list for duplicates")
                     .doesNotHaveDuplicates();
         });
@@ -53,8 +51,6 @@ public class GetAllPlayersTest extends BaseTest {
 
     @AfterAll
     public void cleanUp() {
-        createdPlayers.forEach(playerBeingDeleted ->
-                admin.perform(apiClient -> new DeletePlayerAction(apiClient, playerBeingDeleted.id()))
-        );
+        createdPlayers.forEach(player -> admin.delete(Endpoints.DELETE_PLAYER, player.id()));
     }
 }

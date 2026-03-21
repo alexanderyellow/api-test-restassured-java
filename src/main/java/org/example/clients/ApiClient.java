@@ -10,7 +10,6 @@ import io.restassured.http.Header;
 import io.restassured.specification.RequestSpecification;
 import org.example.config.AppConfig;
 import org.example.config.ConfigurationManager;
-import org.example.model.Session;
 import org.example.utils.JsonBodyMaskingFilter;
 
 /// Client for making API requests.

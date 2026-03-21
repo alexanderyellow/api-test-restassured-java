@@ -1,40 +1,32 @@
 package org.example.permissions;
 
-import org.example.actions.CreatePlayerAction;
-import org.example.actions.DeletePlayerAction;
-import org.example.actions.GetOnePlayerAction;
+import org.example.actions.Endpoints;
 import org.example.data.PlayerTestDataFactory;
-import org.example.model.PlayerRequestDTO;
-import org.example.model.PlayerRequestOneDTO;
-import org.example.model.PlayerResponseDTO;
+import org.example.model.request.GetPlayerRequest;
+import org.example.model.response.PlayerResponse;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class GetOnePlayerPermissionsTest extends BasePermissionsTest {
-    private PlayerResponseDTO expectedPlayer;
+
+    private PlayerResponse expectedPlayer;
 
     @BeforeAll
     public void setUp() {
-        PlayerRequestDTO playerRequestDTO = PlayerTestDataFactory.validPlayerItem().build();
-        expectedPlayer = admin.perform(apiClient ->
-                        new CreatePlayerAction(apiClient, playerRequestDTO)
-                )
-                .as(PlayerResponseDTO.class);
+        expectedPlayer = admin
+                .post(Endpoints.CREATE_PLAYER, PlayerTestDataFactory.validPlayerItem().build())
+                .as(PlayerResponse.class);
     }
 
     @Test
     public void getOnePlayerByNotAuthenticatedUserTest() {
-        PlayerRequestOneDTO request = new PlayerRequestOneDTO(expectedPlayer.email());
-        notAuthenticatedActor
-                .perform(apiClient ->
-                        new GetOnePlayerAction(apiClient, request)
-                                .withExpectedStatusCode(401)
-                );
+        GetPlayerRequest request = new GetPlayerRequest(expectedPlayer.email());
+        notAuthenticatedActor.post(Endpoints.GET_ONE_PLAYER, request, 401);
     }
 
     @AfterAll
     public void cleanUp() {
-        admin.perform(apiClient -> new DeletePlayerAction(apiClient, expectedPlayer.id()));
+        admin.delete(Endpoints.DELETE_PLAYER, expectedPlayer.id());
     }
 }
