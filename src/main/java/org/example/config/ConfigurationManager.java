@@ -2,7 +2,9 @@ package org.example.config;
 
 import io.smallrye.config.SmallRyeConfig;
 import io.smallrye.config.SmallRyeConfigBuilder;
+import lombok.Getter;
 
+@Getter
 public enum ConfigurationManager {
     
     INSTANCE;
@@ -19,7 +21,4 @@ public enum ConfigurationManager {
         this.config = smallRyeConfig.getConfigMapping(AppConfig.class);
     }
 
-    public AppConfig getConfig() {
-        return config;
-    }
 }

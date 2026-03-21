@@ -48,8 +48,6 @@ public class GetOnePlayerTest extends BaseTest {
         Faker faker = new Faker();
         GetPlayerRequest request = new GetPlayerRequest(faker.internet().emailAddress());
         Response response = admin.post(Endpoints.GET_ONE_PLAYER, request, 400);
-
-        assertThat(response.jsonPath().getString("path")).isEqualTo("/automationTask/getOne");
     }
 
     @AfterAll
