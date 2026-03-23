@@ -50,12 +50,12 @@ public class Actor {
         return perform(client -> new HttpAction(client, endpoint).withExpectedStatusCode(expectedStatusCode));
     }
 
-    @Step("Post {endpoint} with body {body}")
+    @Step("Post {endpoint}")
     public Response post(Endpoint endpoint, Object body) {
         return perform(client -> new HttpAction(client, endpoint).withBody(body));
     }
 
-    @Step("Post {endpoint} with body {body} and expected status code {expectedStatusCode}")
+    @Step("Post {endpoint} with expected status code {expectedStatusCode}")
     public Response post(Endpoint endpoint, Object body, int expectedStatusCode) {
         return perform(client -> new HttpAction(client, endpoint).withBody(body).withExpectedStatusCode(expectedStatusCode));
     }
