@@ -1,11 +1,10 @@
 package org.example;
 
 import org.assertj.core.api.SoftAssertions;
-import org.example.actions.CreatePlayerAction;
-import org.example.actions.DeletePlayerAction;
+import org.example.actions.Endpoints;
 import org.example.data.PlayerTestDataFactory;
-import org.example.model.PlayerRequestDTO;
-import org.example.model.PlayerResponseDTO;
+import org.example.model.request.CreatePlayerRequest;
+import org.example.model.response.PlayerResponse;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -19,9 +18,9 @@ import java.util.stream.Stream;
 
 public class CreatePlayerTest extends BaseTest {
 
-    private final List<PlayerResponseDTO> createdPlayers = new CopyOnWriteArrayList<>();
+    private final List<PlayerResponse> createdPlayers = new CopyOnWriteArrayList<>();
 
-    private Stream<PlayerRequestDTO> playerDataProvider() {
+    private Stream<CreatePlayerRequest> playerDataProvider() {
         return Stream.generate(() -> PlayerTestDataFactory.validPlayerItem().build())
                 .limit(12);
     }
@@ -29,11 +28,10 @@ public class CreatePlayerTest extends BaseTest {
     @ParameterizedTest
     @MethodSource("playerDataProvider")
     @Execution(ExecutionMode.CONCURRENT)
-    public void createPlayerTest(PlayerRequestDTO playerRequestDTO) {
-        PlayerResponseDTO playerResponseDTO = admin.perform(apiClient ->
-                        new CreatePlayerAction(apiClient, playerRequestDTO)
-                )
-                .as(PlayerResponseDTO.class);
+    public void createPlayerTest(CreatePlayerRequest playerRequestDTO) {
+        PlayerResponse playerResponseDTO = admin
+                .post(Endpoints.CREATE_PLAYER, playerRequestDTO)
+                .as(PlayerResponse.class);
 
         createdPlayers.add(playerResponseDTO);
 
@@ -53,29 +51,22 @@ public class CreatePlayerTest extends BaseTest {
     // Looks like a Bug. It is possible to create player with existence username and email.
     @Test
     public void createPlayerWithExistingEmailTest() {
-        PlayerRequestDTO firstPlayerRequest = PlayerTestDataFactory.validPlayerItem().build();
-        PlayerResponseDTO firstPlayerResponse = admin.perform(apiClient ->
-                        new CreatePlayerAction(apiClient, firstPlayerRequest)
-                )
-                .as(PlayerResponseDTO.class);
+        CreatePlayerRequest firstPlayerRequest = PlayerTestDataFactory.validPlayerItem().build();
+        PlayerResponse firstPlayerResponse = admin
+                .post(Endpoints.CREATE_PLAYER, firstPlayerRequest)
+                .as(PlayerResponse.class);
         createdPlayers.add(firstPlayerResponse);
 
-        PlayerRequestDTO secondPlayerRequest = PlayerTestDataFactory.validPlayerItem()
+        CreatePlayerRequest secondPlayerRequest = PlayerTestDataFactory.validPlayerItem()
                 .username(firstPlayerRequest.getUsername())
                 .email(firstPlayerRequest.getEmail())
                 .build();
 
-        admin.perform(apiClient ->
-                new CreatePlayerAction(apiClient, secondPlayerRequest)
-                        .withExpectedStatusCode(400)
-        );
+        admin.post(Endpoints.CREATE_PLAYER, secondPlayerRequest, 400);
     }
 
     @AfterAll
     public void cleanUp() {
-        createdPlayers
-                .forEach(playerBeingDeleted ->
-                        admin.perform(apiClient -> new DeletePlayerAction(apiClient, playerBeingDeleted.id()))
-                );
+        createdPlayers.forEach(player -> admin.delete(Endpoints.DELETE_PLAYER, player.id()));
     }
 }

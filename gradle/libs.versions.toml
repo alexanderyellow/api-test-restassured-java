@@ -3,13 +3,14 @@ restAssured = "5.5.0"
 junit = "6.0.3"
 allure = "2.33.0"
 log4j = "2.24.1"
-snakeyaml = "2.3"
 slf4j = "2.0.16"
 assertj = "3.27.7"
 jackson = "2.21.1"
 guava = "33.4.0-jre"
 allurePlugin = "2.12.0"
 datafaker = "2.5.4"
+smallryeConfig = "3.12.4"
+lombok = "1.18.36"
 
 [libraries]
 rest-assured = { group = "io.rest-assured", name = "rest-assured", version.ref = "restAssured" }
@@ -24,10 +25,12 @@ log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
 jackson-dataformat-yaml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version.ref = "jackson" }
-snakeyaml = { group = "org.yaml", name = "snakeyaml", version.ref = "snakeyaml" }
 slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
 datafaker = { group = "net.datafaker", name = "datafaker", version.ref = "datafaker" }
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+smallrye-config = { group = "io.smallrye.config", name = "smallrye-config", version.ref = "smallryeConfig" }
+smallrye-config-yaml = { group = "io.smallrye.config", name = "smallrye-config-source-yaml", version.ref = "smallryeConfig" }
+lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
 
 [bundles]
 allure = ["allure-junit5", "allure-rest-assured"]

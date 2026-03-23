@@ -17,10 +17,16 @@ dependencies {
     implementation libs.log4j.api
     implementation libs.log4j.core
     implementation libs.guava
-    implementation libs.snakeyaml
     implementation libs.slf4j.simple
     implementation libs.jackson.databind
     implementation libs.jackson.dataformat.yaml
+    implementation libs.smallrye.config
+    implementation libs.smallrye.config.yaml
+
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+    testCompileOnly libs.lombok
+    testAnnotationProcessor libs.lombok
 
     testImplementation libs.datafaker
     testImplementation libs.junit.jupiter.api

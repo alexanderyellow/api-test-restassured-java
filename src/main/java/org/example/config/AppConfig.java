@@ -1,42 +1,26 @@
 package org.example.config;
 
+import io.smallrye.config.ConfigMapping;
 
-/// Represents the application configuration.
-public class AppConfig {
-    private String baseUrl;
-    private String userEmail;
-    private String userPassword;
-    private boolean loggingEnabled = true;
+@ConfigMapping(prefix = "")
+public interface AppConfig {
 
-    public String getBaseUrl() {
-        return baseUrl;
+    Api api();
+
+    Auth auth();
+
+    Logging logging();
+
+    interface Api {
+        String baseUrl(); // maps to "api.base-url"
     }
 
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
+    interface Auth {
+        String email();    // overridable via AUTH_EMAIL env var
+        String password(); // overridable via AUTH_PASSWORD env var
     }
 
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
-    }
-
-    public boolean isLoggingEnabled() {
-        return loggingEnabled;
-    }
-
-    public void setLoggingEnabled(boolean loggingEnabled) {
-        this.loggingEnabled = loggingEnabled;
+    interface Logging {
+        boolean enabled();
     }
 }

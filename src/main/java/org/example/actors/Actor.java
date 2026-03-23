@@ -1,52 +1,76 @@
 package org.example.actors;
 
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
-import org.example.actions.AbstractAction;
-import org.example.actions.LoginAction;
+import lombok.Getter;
+import org.example.actions.Endpoint;
+import org.example.actions.Endpoints;
+import org.example.actions.HttpAction;
 import org.example.clients.ApiClient;
-import org.example.model.CredentialsDTO;
-import org.example.model.LoginResponseDTO;
-import org.example.model.Session;
-import org.example.config.AppConfig;
-import org.example.model.User;
+import org.example.clients.Session;
+import org.example.model.request.LoginRequest;
+import org.example.model.response.LoginResponse;
+import org.example.model.response.User;
 
 import java.util.function.Function;
 
-/// Represents a test actor that can perform actions using an API client.
+/// Represents a test actor that can perform API actions using typed convenience methods
+/// or a raw {@link #perform(Function)} escape hatch for custom configurations.
 public class Actor {
+
     private final ApiClient apiClient;
-    private final CredentialsDTO credentials;
+    @Getter
+    private final LoginRequest credentials;
+    @Getter
     private User user;
+    @Getter
     private final Session session = new Session();
 
-    public Actor(AppConfig appConfig, CredentialsDTO credentials) {
+    public Actor(LoginRequest credentials) {
         this.credentials = credentials;
-        this.apiClient = new ApiClient(appConfig, session);
+        this.apiClient = new ApiClient(session);
     }
 
     public Actor login() {
-        Response response = perform(apiClient -> new LoginAction(apiClient, credentials));
-        LoginResponseDTO loginResponse = response.as(LoginResponseDTO.class);
+        Response response = post(Endpoints.LOGIN, credentials);
+        LoginResponse loginResponse = response.as(LoginResponse.class);
         user = loginResponse.user();
         session.setAccessToken(loginResponse.accessToken());
-
+        
         return this;
     }
 
-    public CredentialsDTO getCredentials() {
-        return credentials;
+    @Step("Get {endpoint}")
+    public Response get(Endpoint endpoint) {
+        return perform(client -> new HttpAction(client, endpoint));
     }
 
-    public User getUser() {
-        return user;
+    @Step("Get {endpoint} with expected status code {expectedStatusCode}")
+    public Response get(Endpoint endpoint, int expectedStatusCode) {
+        return perform(client -> new HttpAction(client, endpoint).withExpectedStatusCode(expectedStatusCode));
     }
 
-    public Session getSession() {
-        return session;
+    @Step("Post {endpoint}")
+    public Response post(Endpoint endpoint, Object body) {
+        return perform(client -> new HttpAction(client, endpoint).withBody(body));
     }
 
-    public <T extends AbstractAction> Response perform(Function<ApiClient, T> actionBuilder) {
+    @Step("Post {endpoint} with expected status code {expectedStatusCode}")
+    public Response post(Endpoint endpoint, Object body, int expectedStatusCode) {
+        return perform(client -> new HttpAction(client, endpoint).withBody(body).withExpectedStatusCode(expectedStatusCode));
+    }
+
+    @Step("Delete {endpoint} with path param {id}")
+    public Response delete(Endpoint endpoint, String id) {
+        return perform(client -> new HttpAction(client, endpoint).withPathParam("id", id));
+    }
+
+    @Step("Delete {endpoint} with path param {id} and expected status code {expectedStatusCode}")
+    public Response delete(Endpoint endpoint, String id, int expectedStatusCode) {
+        return perform(client -> new HttpAction(client, endpoint).withPathParam("id", id).withExpectedStatusCode(expectedStatusCode));
+    }
+
+    public Response perform(Function<ApiClient, HttpAction> actionBuilder) {
         return actionBuilder.apply(apiClient).perform();
     }
-
 }

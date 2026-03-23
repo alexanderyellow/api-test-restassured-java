@@ -1,9 +1,12 @@
-package org.example.model;
+package org.example.model.response;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
-public record PlayerResponseDTO(
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+public record PlayerResponse(
         @JsonAlias({"_id", "id"})
         @JsonProperty("_id")
         String id,
@@ -11,11 +14,8 @@ public record PlayerResponseDTO(
         String email,
         String name,
         String surname,
-        @JsonProperty("currency_code")
         String currencyCode,
-        @JsonProperty("password_change")
         String passwordChange,
-        @JsonProperty("password_repeat")
         String passwordRepeat,
         @JsonProperty("__v")
         Integer v

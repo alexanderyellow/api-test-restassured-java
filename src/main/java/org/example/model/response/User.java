@@ -1,5 +1,9 @@
-package org.example.model;
+package org.example.model.response;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record User(
         String id,
         String email,
@@ -7,15 +11,15 @@ public record User(
         String surname,
         String role,
         String position,
-        String status,
+        String status, 
         Boolean isReport,
         String comment,
         String createBy,
         String report,
-        String updated_at,
-        String created_at,
+        String updatedAt,
+        String createdAt,
         Boolean feedback,
-        String finished_at,
+        String finishedAt,
         String linkedin,
         String city,
         String jira

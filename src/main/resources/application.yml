@@ -1,0 +1,4 @@
+api:
+  base-url: https://testslotegrator.com/api
+logging:
+  enabled: true

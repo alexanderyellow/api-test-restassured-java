@@ -11,8 +11,8 @@ jobs:
     name: Run API Tests
     runs-on: ubuntu-latest
     env:
-      USER_EMAIL: ${{ secrets.USER_EMAIL }}
-      USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+      AUTH_EMAIL: ${{ secrets.USER_EMAIL }}
+      AUTH_PASSWORD: ${{ secrets.USER_PASSWORD }}
 
     steps:
       - name: Checkout repository
@@ -29,7 +29,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run tests
-        run: ./gradlew clean test -Dlogging=false
+        run: ./gradlew clean test -Dlogging.enabled=false
 
       - name: Generate Allure Report
         if: always()
